@@ -4,6 +4,93 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anamnese Fast - Silvestre Azevedo</title>
+<style>
+  /* Botão flutuante */
+  #btn-scores-flutuante {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999;
+    background-color: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 20px;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+
+  #btn-scores-flutuante:hover {
+    background-color: #0d47a1;
+  }
+
+  /* Fundo escuro atrás do modal */
+  #modal-scores-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 9998;
+  }
+
+  /* Caixa do modal */
+  #modal-scores {
+    position: fixed;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 400px;
+    max-height: 85vh;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    padding: 16px;
+    overflow-y: auto;
+    z-index: 10000;
+    display: none;
+  }
+
+  #modal-scores h2 {
+    margin-top: 0;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  #modal-scores .fechar {
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  #modal-scores section {
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+
+  #modal-scores section:first-of-type {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  #modal-scores label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  #modal-scores button {
+    margin-top: 6px;
+    margin-bottom: 4px;
+  }
+
+  #modal-scores p {
+    font-size: 13px;
+  }
+</style>
 
   <style>
     :root{
@@ -869,8 +956,7 @@
       <h1>Anamnese Fast</h1>
       <span class="author">Desenvolvido por: Silvestre Azevedo - Acadêmico de Medicina</span>
       <div style="text-align:center;">
-        <!-- ajuste para Flask -->
-        <img src="/static/perfil.jpg" class="profile-pic" onerror="this.style.display='none'" alt="Foto perfil" />
+        <img src="perfil.jpg" class="profile-pic" onerror="this.style.display='none'" alt="Foto perfil" />
       </div>
     </div>
 
@@ -1329,6 +1415,252 @@
       </div>
     </div>
   </div>
+
+<!-- Botão flutuante Scores -->
+<button id="btn-scores-flutuante" type="button" onclick="abrirScores()">
+  Scores
+</button>
+
+<!-- Fundo escuro do modal -->
+<div id="modal-scores-backdrop" onclick="fecharScores()"></div>
+
+<!-- Modal com os scores -->
+<div id="modal-scores">
+  <span class="fechar" onclick="fecharScores()">✕</span>
+  <h2>Scores</h2>
+
+  <!-- CURB-65 -->
+  <section>
+    <h3>CURB-65</h3>
+
+    <label>
+      <input type="checkbox" id="curb-confusao">
+      Confusão mental aguda
+    </label>
+
+    <label>
+      <input type="checkbox" id="curb-ureia">
+      Ureia/BUN elevado (≥ 7 mmol/L ou ≥ 20 mg/dL)
+    </label>
+
+    <label>
+      <input type="checkbox" id="curb-fr30">
+      FR ≥ 30 irpm
+    </label>
+
+    <label>
+      <input type="checkbox" id="curb-pa">
+      PAS &lt; 90 mmHg ou PAD ≤ 60 mmHg
+    </label>
+
+    <label>
+      <input type="checkbox" id="curb-idade65">
+      Idade ≥ 65 anos
+    </label>
+
+    <button type="button" onclick="atualizaCURB65()">Calcular CURB-65</button>
+    <p id="curb-resultado"></p>
+  </section>
+
+  <!-- Glasgow -->
+  <section>
+    <h3>Escala de Glasgow</h3>
+
+    <label>Abertura ocular (E)</label>
+    <select id="gcs-ocular" onchange="atualizaGCS()">
+      <option value="4">4 - Espontânea</option>
+      <option value="3">3 - Ao chamado</option>
+      <option value="2">2 - À dor</option>
+      <option value="1">1 - Nenhuma</option>
+    </select>
+
+    <label>Resposta verbal (V)</label>
+    <select id="gcs-verbal" onchange="atualizaGCS()">
+      <option value="5">5 - Orientado</option>
+      <option value="4">4 - Confuso</option>
+      <option value="3">3 - Palavras inapropriadas</option>
+      <option value="2">2 - Sons incompreensíveis</option>
+      <option value="1">1 - Nenhuma</option>
+    </select>
+
+    <label>Resposta motora (M)</label>
+    <select id="gcs-motora" onchange="atualizaGCS()">
+      <option value="6">6 - Obedece comandos</option>
+      <option value="5">5 - Localiza dor</option>
+      <option value="4">4 - Retirada à dor</option>
+      <option value="3">3 - Flexão anormal</option>
+      <option value="2">2 - Extensão anormal</option>
+      <option value="1">1 - Nenhuma</option>
+    </select>
+
+    <button type="button" onclick="atualizaGCS()">Calcular Glasgow</button>
+    <p id="gcs-resultado"></p>
+  </section>
+
+  <!-- TIMI Score -->
+  <section>
+    <h3>TIMI Score (Síndrome Coronariana Aguda)</h3>
+
+    <label>
+      <input type="checkbox" id="timi-idade">
+      Idade ≥ 65 anos
+    </label>
+
+    <label>
+      <input type="checkbox" id="timi-fatores">
+      ≥ 3 fatores de risco (HAS, DM, tabagismo, dislipidemia, história familiar)
+    </label>
+
+    <label>
+      <input type="checkbox" id="timi-estenose">
+      Estenose coronariana conhecida ≥ 50%
+    </label>
+
+    <label>
+      <input type="checkbox" id="timi-aspirina">
+      Uso de AAS nos últimos 7 dias
+    </label>
+
+    <label>
+      <input type="checkbox" id="timi-angina">
+      ≥ 2 episódios de angina nas últimas 24h
+    </label>
+
+    <label>
+      <input type="checkbox" id="timi-st">
+      Desvio do segmento ST ≥ 0,5 mm
+    </label>
+
+    <label>
+      <input type="checkbox" id="timi-marcadores">
+      Marcadores cardíacos elevados (troponina, CK-MB)
+    </label>
+
+    <button type="button" onclick="atualizaTIMI()">Calcular TIMI</button>
+    <p id="timi-resultado"></p>
+  </section>
+
+  <!-- SOFA Score -->
+  <section>
+    <h3>SOFA Score (Disfunção Orgânica)</h3>
+
+    <label>PaO2/FiO2 ou SatO2/FiO2</label>
+    <select id="sofa-resp">
+      <option value="0">≥ 400 (normal)</option>
+      <option value="1">300-399</option>
+      <option value="2">200-299</option>
+      <option value="3">100-199 (VM)</option>
+      <option value="4">&lt; 100 (VM)</option>
+    </select>
+
+    <label>Plaquetas (×10³/μL)</label>
+    <select id="sofa-plaq">
+      <option value="0">≥ 150</option>
+      <option value="1">100-149</option>
+      <option value="2">50-99</option>
+      <option value="3">20-49</option>
+      <option value="4">&lt; 20</option>
+    </select>
+
+    <label>Bilirrubina (mg/dL)</label>
+    <select id="sofa-bili">
+      <option value="0">&lt; 1.2</option>
+      <option value="1">1.2-1.9</option>
+      <option value="2">2.0-5.9</option>
+      <option value="3">6.0-11.9</option>
+      <option value="4">≥ 12.0</option>
+    </select>
+
+    <label>PAM ou uso de vasopressores</label>
+    <select id="sofa-cv">
+      <option value="0">PAM ≥ 70 mmHg</option>
+      <option value="1">PAM &lt; 70 mmHg</option>
+      <option value="2">Dopamina ≤ 5 ou dobutamina</option>
+      <option value="3">Dopamina &gt; 5 ou Nora ≤ 0.1</option>
+      <option value="4">Dopamina &gt; 15 ou Nora &gt; 0.1</option>
+    </select>
+
+    <label>Escala de Glasgow</label>
+    <select id="sofa-neuro">
+      <option value="0">15</option>
+      <option value="1">13-14</option>
+      <option value="2">10-12</option>
+      <option value="3">6-9</option>
+      <option value="4">&lt; 6</option>
+    </select>
+
+    <label>Creatinina (mg/dL) ou débito urinário</label>
+    <select id="sofa-renal">
+      <option value="0">&lt; 1.2</option>
+      <option value="1">1.2-1.9</option>
+      <option value="2">2.0-3.4</option>
+      <option value="3">3.5-4.9 ou DU &lt; 500ml/dia</option>
+      <option value="4">≥ 5.0 ou DU &lt; 200ml/dia</option>
+    </select>
+
+    <button type="button" onclick="atualizaSOFA()">Calcular SOFA</button>
+    <p id="sofa-resultado"></p>
+  </section>
+
+  <!-- Wells Score (TVP) -->
+  <section>
+    <h3>Wells Score (Trombose Venosa Profunda)</h3>
+
+    <label>
+      <input type="checkbox" id="wells-cancer">
+      Câncer ativo (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="wells-paralisia">
+      Paralisia, paresia ou imobilização recente de MMII (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="wells-leito">
+      Restrição ao leito &gt; 3 dias ou cirurgia &lt; 12 semanas (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="wells-dor">
+      Dor localizada ao longo do sistema venoso profundo (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="wells-edema">
+      Edema de toda a perna (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="wells-panturrilha">
+      Circunferência da panturrilha &gt; 3cm que o lado assintomático (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="wells-cacifo">
+      Edema com cacifo (mais na perna sintomática) (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="wells-veias">
+      Veias superficiais colaterais (não varicosas) (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="wells-tvp-previa">
+      TVP prévia documentada (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="wells-alternativo">
+      Diagnóstico alternativo tão ou mais provável que TVP (-2)
+    </label>
+
+    <button type="button" onclick="atualizaWells()">Calcular Wells</button>
+    <p id="wells-resultado"></p>
+  </section>
+</div>
+
   <script>
 
     // ============ FUNÇÕES ESPECIALIDADES ============
@@ -1419,7 +1751,6 @@
         if (value === "Sim") detail.focus();
       }
 
-      // bloco de cálculo tabágico
       if (type === "tabagismo"){
         const calcDiv = document.getElementById("tabagismo-calc");
         if (calcDiv){
@@ -1438,7 +1769,6 @@
       return (el && el.value) ? el.value.trim() : "";
     }
 
-    // cálculo carga tabágica: (cigarros/dia ÷ 20) × anos fumando [web:34][web:38]
     function calcularCargaTabagica(){
       const cigs = parseFloat(document.getElementById("tab_cigs_dia")?.value || "0");
       const anos = parseFloat(document.getElementById("tab_anos")?.value || "0");
@@ -1588,7 +1918,7 @@ Coordenação: Eumétrica. Romberg negativo. Sem sinais meníngeos.`
 
       return `${label}: ${yn}${det ? " (" + det + ")" : ""}`;
     }
-// ============ CAPTURAR DADOS GASTRO ============
+
 function capturarDadosGastro() {
   const linhas = [];
   const gastroAtiva = document.getElementById('secao-gastro')?.classList.contains('active');
@@ -1598,13 +1928,11 @@ function capturarDadosGastro() {
   linhas.push("# ANAMNESE - GASTROENTEROLOGIA #");
   linhas.push("");
   
-  // Função auxiliar
   function getChecked(ids) {
     return ids.filter(id => document.getElementById(id)?.checked)
               .map(id => document.querySelector('label[for="' + id + '"]')?.textContent || id);
   }
   
-  // Dor Abdominal
   if (document.getElementById('dor-abdominal')?.checked) {
     linhas.push("**DOR ABDOMINAL:**");
     const locs = getChecked(['loc-epigastrio','loc-hd','loc-he','loc-peri','loc-fid','loc-fie','loc-difusa']);
@@ -1614,7 +1942,6 @@ function capturarDadosGastro() {
     linhas.push("");
   }
   
-  // Sintomas Digestivos
   const altos = getChecked(['azia','regurg','nauseas','odinofagia','saciedade','plenitude']);
   if (altos.length > 0) {
     linhas.push("**SINTOMAS DIGESTIVOS ALTOS:** " + altos.join(", "));
@@ -1701,9 +2028,8 @@ function capturarDadosGastro() {
       linhas.push("**EXAME NEUROLÓGICO DETALHADO:**");
       linhas.push(v("neuro_detalhado"));
       linhas.push("");
-      // Adicionar dados de Gastroenterologia
-const dadosGastro = capturarDadosGastro();
-dadosGastro.forEach(linha => linhas.push(linha));
+      const dadosGastro = capturarDadosGastro();
+      dadosGastro.forEach(linha => linhas.push(linha));
       return linhas.join("\n");
     }
 
@@ -1742,22 +2068,18 @@ dadosGastro.forEach(linha => linhas.push(linha));
   function renderLinha(l){
     if (!l.trim()) return `<div class="space"></div>`;
 
-    // Título principal
     if (l.startsWith("##") && l.endsWith("##")){
       return `<h1>${l.replace(/#/g,"").trim()}</h1>`;
     }
 
-    // Grande seção
     if (l.startsWith("# ") && l.endsWith(" #")){
       return `<h2>${l.replace(/#/g,"").trim()}</h2>`;
     }
 
-    // Subtítulo em negrito
     if (l.startsWith("**") && l.endsWith("**")){
       return `<h3>${l.replace(/\*/g,"").trim()}</h3>`;
     }
 
-    // Sinais vitais
     if (l.startsWith("PA:")){
       return `<div class="vitals">${l}</div>`;
     }
@@ -1925,7 +2247,6 @@ ${linhas.map(renderLinha).join("")}
       initMedsField();
     });
 
-// ========== SISTEMA DE LOGIN COM CADASTRO ==========
 (function() {
   const CRED_KEY = 'anamnese_credentials';
   const SESSION_KEY = 'anamnese_auth_session';
@@ -2153,7 +2474,6 @@ ${linhas.map(renderLinha).join("")}
   document.addEventListener('DOMContentLoaded', inicializarLogin);
 })();
 
-// ========== HISTÓRICO DE PACIENTES ==========
 (function () {
   const HISTORICO_KEY = 'anamnese_historico';
 
@@ -2183,12 +2503,12 @@ ${linhas.map(renderLinha).join("")}
     const fieldIds = [
       'responsavel', 'nome', 'idade', 'sexo', 'religiao', 'unidade',
       'alergias-detalhe', 'internacao-detalhe',
-      'tabagismo-detalhe', 'tabcigsdia', 'tabanos',
+      'tabagismo-detalhe', 'tab_cigs_dia', 'tab_anos',
       'etilismo-detalhe', 'drogas-detalhe',
-      'qp', 'hda', 'hpp', 'medscontinuos', 'hf', 'labs', 'imagem',
+      'qp', 'hda', 'hpp', 'meds_continuos', 'hf', 'labs', 'imagem',
       'pa', 'fc', 'fr', 'sat', 'temp', 'hgt',
-      'efectoscopia', 'efcp', 'efacv', 'efap', 'efabd', 'efneuro', 'efmembros',
-      'neurodetalhado'
+      'ef_ectoscopia', 'ef_cp', 'ef_acv', 'ef_ap', 'ef_abd', 'ef_neuro', 'ef_membros',
+      'neuro_detalhado'
     ];
 
     const data = { fields: {}, toggles: {} };
@@ -2205,7 +2525,7 @@ ${linhas.map(renderLinha).join("")}
       if (typeof state !== 'undefined' && state[key]) {
         data.toggles[key] = state[key];
       } else {
-        data.toggles[key] = 'No';
+        data.toggles[key] = 'Não';
       }
     });
 
@@ -2423,6 +2743,208 @@ ${linhas.map(renderLinha).join("")}
     }
   });
 })();
+
+  // Abrir/fechar modal
+  function abrirScores() {
+    document.getElementById("modal-scores").style.display = "block";
+    document.getElementById("modal-scores-backdrop").style.display = "block";
+  }
+
+  function fecharScores() {
+    document.getElementById("modal-scores").style.display = "none";
+    document.getElementById("modal-scores-backdrop").style.display = "none";
+  }
+
+  // ---------- CURB-65 ----------
+  function calcCURB65({confusao, ureiaAlta, respi30, pasBaixa, idade65}) {
+    let score = 0;
+    if (confusao) score++;
+    if (ureiaAlta) score++;
+    if (respi30) score++;
+    if (pasBaixa) score++;
+    if (idade65) score++;
+
+    let risco;
+    if (score <= 1) {
+      risco = "baixo risco (~1–2% mortalidade, geralmente ambulatorial)";
+    } else if (score === 2) {
+      risco = "risco intermediário (~9% mortalidade, considerar internação)";
+    } else if (score === 3) {
+      risco = "alto risco (~22% mortalidade, internação e avaliar UTI)";
+    } else {
+      risco = "muito alto risco (>30% mortalidade, forte indicação de UTI)";
+    }
+
+    return { score, risco };
+  }
+
+  function atualizaCURB65() {
+    const dados = {
+      confusao: document.getElementById("curb-confusao").checked,
+      ureiaAlta: document.getElementById("curb-ureia").checked,
+      respi30: document.getElementById("curb-fr30").checked,
+      pasBaixa: document.getElementById("curb-pa").checked,
+      idade65: document.getElementById("curb-idade65").checked
+    };
+
+    const { score, risco } = calcCURB65(dados);
+    document.getElementById("curb-resultado").textContent =
+      `CURB-65: ${score} ponto(s) – ${risco}`;
+  }
+
+  // ---------- Glasgow ----------
+  function calcGCS({ocular, verbal, motora}) {
+    const e = Number(ocular);
+    const v = Number(verbal);
+    const m = Number(motora);
+    const total = e + v + m;
+
+    let classificacao;
+    if (total >= 13) {
+      classificacao = "TCE leve (13–15)";
+    } else if (total >= 9) {
+      classificacao = "TCE moderado (9–12)";
+    } else {
+      classificacao = "TCE grave (3–8, geralmente coma)";
+    }
+
+    return { total, e, v, m, classificacao };
+  }
+
+  function atualizaGCS() {
+    const ocular = document.getElementById("gcs-ocular").value;
+    const verbal = document.getElementById("gcs-verbal").value;
+    const motora = document.getElementById("gcs-motora").value;
+
+    const { total, e, v, m, classificacao } = calcGCS({ocular, verbal, motora});
+    document.getElementById("gcs-resultado").textContent =
+      `Glasgow: ${total} (E${e} V${v} M${m}) – ${classificacao}`;
+  }
+
+  // ---------- TIMI Score ----------
+  function calcTIMI(dados) {
+    let score = 0;
+    if (dados.idade) score++;
+    if (dados.fatores) score++;
+    if (dados.estenose) score++;
+    if (dados.aspirina) score++;
+    if (dados.angina) score++;
+    if (dados.st) score++;
+    if (dados.marcadores) score++;
+
+    let risco;
+    if (score <= 2) {
+      risco = "Baixo risco (4.7% de eventos em 14 dias)";
+    } else if (score <= 4) {
+      risco = "Risco intermediário (19.9% de eventos em 14 dias)";
+    } else {
+      risco = "Alto risco (41% de eventos em 14 dias)";
+    }
+
+    return { score, risco };
+  }
+
+  function atualizaTIMI() {
+    const dados = {
+      idade: document.getElementById("timi-idade").checked,
+      fatores: document.getElementById("timi-fatores").checked,
+      estenose: document.getElementById("timi-estenose").checked,
+      aspirina: document.getElementById("timi-aspirina").checked,
+      angina: document.getElementById("timi-angina").checked,
+      st: document.getElementById("timi-st").checked,
+      marcadores: document.getElementById("timi-marcadores").checked
+    };
+
+    const { score, risco } = calcTIMI(dados);
+    document.getElementById("timi-resultado").textContent =
+      `TIMI Score: ${score}/7 – ${risco}`;
+  }
+
+  // ---------- SOFA Score ----------
+  function calcSOFA(dados) {
+    const resp = Number(dados.resp);
+    const plaq = Number(dados.plaq);
+    const bili = Number(dados.bili);
+    const cv = Number(dados.cv);
+    const neuro = Number(dados.neuro);
+    const renal = Number(dados.renal);
+    
+    const total = resp + plaq + bili + cv + neuro + renal;
+
+    let interpretacao;
+    if (total < 2) {
+      interpretacao = "Baixo risco de mortalidade (<10%)";
+    } else if (total <= 5) {
+      interpretacao = "Risco intermediário de mortalidade (15-20%)";
+    } else if (total <= 10) {
+      interpretacao = "Alto risco de mortalidade (40-50%)";
+    } else {
+      interpretacao = "Risco muito alto de mortalidade (>80%)";
+    }
+
+    return { total, interpretacao };
+  }
+
+  function atualizaSOFA() {
+    const dados = {
+      resp: document.getElementById("sofa-resp").value,
+      plaq: document.getElementById("sofa-plaq").value,
+      bili: document.getElementById("sofa-bili").value,
+      cv: document.getElementById("sofa-cv").value,
+      neuro: document.getElementById("sofa-neuro").value,
+      renal: document.getElementById("sofa-renal").value
+    };
+
+    const { total, interpretacao } = calcSOFA(dados);
+    document.getElementById("sofa-resultado").textContent =
+      `SOFA Score: ${total}/24 – ${interpretacao}`;
+  }
+
+  // ---------- Wells Score (TVP) ----------
+  function calcWells(dados) {
+    let score = 0;
+    if (dados.cancer) score += 1;
+    if (dados.paralisia) score += 1;
+    if (dados.leito) score += 1;
+    if (dados.dor) score += 1;
+    if (dados.edema) score += 1;
+    if (dados.panturrilha) score += 1;
+    if (dados.cacifo) score += 1;
+    if (dados.veias) score += 1;
+    if (dados.tvpPrevia) score += 1;
+    if (dados.alternativo) score -= 2;
+
+    let probabilidade;
+    if (score <= 0) {
+      probabilidade = "Baixa probabilidade (3% de TVP)";
+    } else if (score <= 2) {
+      probabilidade = "Probabilidade moderada (17% de TVP)";
+    } else {
+      probabilidade = "Alta probabilidade (75% de TVP)";
+    }
+
+    return { score, probabilidade };
+  }
+
+  function atualizaWells() {
+    const dados = {
+      cancer: document.getElementById("wells-cancer").checked,
+      paralisia: document.getElementById("wells-paralisia").checked,
+      leito: document.getElementById("wells-leito").checked,
+      dor: document.getElementById("wells-dor").checked,
+      edema: document.getElementById("wells-edema").checked,
+      panturrilha: document.getElementById("wells-panturrilha").checked,
+      cacifo: document.getElementById("wells-cacifo").checked,
+      veias: document.getElementById("wells-veias").checked,
+      tvpPrevia: document.getElementById("wells-tvp-previa").checked,
+      alternativo: document.getElementById("wells-alternativo").checked
+    };
+
+    const { score, probabilidade } = calcWells(dados);
+    document.getElementById("wells-resultado").textContent =
+      `Wells Score: ${score} pontos – ${probabilidade}`;
+  }
+
   </script>
     <!-- MODAL DE ESPECIALIDADES -->
   <div id="modalEspecialidades" class="modal-especialidades">
