@@ -103,6 +103,69 @@
       --gray1:#616161;
       --gray2:#424242;
       --pdf:#0d47a1;
+      --input-bg:#fafafa;
+      --border:#ccc;
+      --shadow:rgba(0,0,0,0.08);
+    }
+
+    /* Dark Mode */
+    body.dark-mode{
+      --bg:#1a1a1a;
+      --white:#2d2d2d;
+      --text:#e0e0e0;
+      --input-bg:#3a3a3a;
+      --border:#555;
+      --shadow:rgba(0,0,0,0.3);
+      --light:#004d40;
+    }
+
+    body.dark-mode .author{
+      color:#aaa;
+    }
+
+    body.dark-mode .input-label{
+      color:#bbb;
+    }
+
+    body.dark-mode .label-bold{
+      color:#e0e0e0;
+    }
+
+    body.dark-mode .toggle-btn{
+      background:#404040;
+      border-color:#555;
+      color:#e0e0e0;
+    }
+
+    body.dark-mode .toggle-btn:hover{
+      background:#4a4a4a;
+    }
+
+    body.dark-mode .toggle-btn.active{
+      background:var(--primary);
+      color:white;
+    }
+
+    body.dark-mode .modal-content,
+    body.dark-mode .modal-historico-content,
+    body.dark-mode #modal-scores{
+      background:#2d2d2d;
+      color:#e0e0e0;
+    }
+
+    body.dark-mode .paciente-item{
+      background:#3a3a3a;
+      color:#e0e0e0;
+    }
+
+    body.dark-mode .paciente-item:hover{
+      background:#404040;
+    }
+
+    body.dark-mode #finalReport{
+      background:#3a3a3a;
+      color:#e0e0e0;
+      border-color:#555;
     }
     body{
       font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -192,12 +255,13 @@
     .input-field, select, textarea{
       width:100%;
       padding:10px;
-      border:1px solid #ccc;
+      border:1px solid var(--border);
       border-radius:6px;
       box-sizing:border-box;
       font-family:inherit;
       font-size:0.95rem;
-      background:#fafafa;
+      background:var(--input-bg);
+      color:var(--text);
     }
     .input-field:focus, textarea:focus, select:focus{
       border-color:var(--primary);
@@ -477,6 +541,24 @@
 
 .btn-historico:hover {
   transform: scale(1.1);
+}
+
+/* Badge de notificação */
+.badge-notif {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #f44336;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 900;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
 .modal-historico {
@@ -767,6 +849,61 @@
       box-shadow: 0 6px 15px rgba(0,105,92,0.4);
     }
 
+    /* Botão Dark Mode */
+    /* Botão Dark Mode - Circular e minimalista */
+    .btn-dark-mode {
+      position: fixed;
+      right: 20px;
+      top: 40%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #424242 0%, #212121 100%);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.3s;
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    .btn-dark-mode:hover {
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Dark mode ativo - muda cor do botão */
+    body.dark-mode .btn-dark-mode {
+      background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+    }
+
+    /* Botão Backup */
+    .btn-backup {
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(25,118,210,0.3);
+      transition: all 0.3s;
+      z-index: 100;
+    }
+    .btn-backup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(25,118,210,0.4);
+    }
+
     .modal-especialidades {
       display: none;
       position: fixed;
@@ -921,6 +1058,12 @@
   📋
 </button>
 
+<!-- BOTÃO FLUTUANTE DE LEMBRETES -->
+<button onclick="abrirModalLembretes()" class="btn-historico" id="btnLembretes" title="Lembretes de Retorno" style="bottom:90px; position:relative;">
+  🔔
+  <span id="badge-lembretes" class="badge-notif" style="display:none;">0</span>
+</button>
+
 <!-- MODAL DE HISTÓRICO -->
 <div id="modalHistorico" class="modal-historico">
   <div class="modal-historico-content">
@@ -947,6 +1090,23 @@
 </div>
 
   <div class="container">
+        <!-- BOTÃO DARK MODE -->
+    <button class="btn-dark-mode" onclick="toggleDarkMode()" id="btnDarkMode">
+      🌙 Modo Escuro
+    </button>
+
+    <!-- BOTÃO BACKUP -->
+    <button class="btn-backup" onclick="toggleMenuBackup()" id="btnBackup">
+      💾 Backup ▼
+    </button>
+
+    <!-- MINI MENU BACKUP -->
+    <div id="menuBackup" style="display:none; position:absolute; top:125px; right:20px; background:white; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); padding:10px; z-index:101; min-width:150px;">
+      <button onclick="exportarDados()" style="width:100%; padding:10px; margin-bottom:8px; background:#4caf50; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.85rem;">📤 Exportar</button>
+      <button onclick="document.getElementById('importFile').click()" style="width:100%; padding:10px; background:#ff9800; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.85rem;">📥 Importar</button>
+      <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importarDados(event)">
+    </div>
+
         <!-- BOTÃO ESPECIALIDADES -->
     <button class="btn-especialidades" onclick="abrirModalEspecialidades()">
       🏥 Especialidades ▼
@@ -1082,6 +1242,26 @@
     <input type="text" id="qp" class="input-field" style="margin-bottom:10px;" placeholder="Descreva a QP" />
 
     <span class="input-label label-bold">HISTÓRIA DA DOENÇA ATUAL (HDA)</span>
+    
+    <!-- Barra de formatação HDA -->
+    <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+      <button type="button" onclick="formatarHDA('bold')" style="padding:6px 12px; background:#555; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:900; font-size:0.85rem;" title="Negrito">
+        <strong>B</strong>
+      </button>
+      <button type="button" onclick="formatarHDA('italic')" style="padding:6px 12px; background:#555; color:white; border:none; border-radius:4px; cursor:pointer; font-style:italic; font-size:0.85rem;" title="Itálico">
+        <em>I</em>
+      </button>
+      <select id="hdaFontSize" style="padding:6px 10px; border:1px solid #ccc; border-radius:4px; font-size:0.85rem; cursor:pointer;">
+        <option value="">Tamanho</option>
+        <option value="small">Pequeno</option>
+        <option value="normal">Normal</option>
+        <option value="large">Grande</option>
+      </select>
+      <button type="button" onclick="aplicarTamanhoFonteHDA()" style="padding:6px 12px; background:#00695c; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:700; font-size:0.85rem;">
+        Aplicar tamanho
+      </button>
+    </div>
+    
     <textarea id="hda" rows="4" placeholder="Descreva a HDA..."></textarea>
 
     <div class="row">
@@ -1197,6 +1377,93 @@
 
     <div class="section-title">Exame Neurológico Detalhado</div>
     <textarea id="neuro_detalhado" rows="10"></textarea>
+
+    <!-- ============ SEÇÃO: DIAGNÓSTICOS DIFERENCIAIS ============ -->
+    <div class="section-title">🔍 Diagnósticos Diferenciais / Hipóteses Diagnósticas</div>
+    
+    <div style="margin-bottom:15px;">
+      <div style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
+        <input type="text" id="busca-cid" class="input-field" placeholder="🔎 Buscar CID-10 (ex: diabetes, J18, pneumonia)" style="flex:2;" />
+        <button type="button" onclick="buscarCID10()" style="flex:0.5; padding:10px; background:#00695c; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:700;">Buscar</button>
+      </div>
+      
+      <div id="resultados-cid" style="display:none; max-height:200px; overflow-y:auto; border:1px solid #ccc; border-radius:6px; padding:10px; background:#fafafa; margin-bottom:10px;">
+        <!-- Resultados da busca aparecem aqui -->
+      </div>
+    </div>
+
+    <div id="diagnosticos-lista" style="margin-bottom:15px;">
+      <!-- Lista de diagnósticos selecionados -->
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <span class="input-label label-bold">HIPÓTESE DIAGNÓSTICA 1 (Principal)</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="text" id="hd1" class="input-field" placeholder="Diagnóstico principal" style="flex:2;" />
+          <input type="text" id="hd1-cid" class="input-field" placeholder="CID-10" style="flex:1;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <span class="input-label">Hipótese Diagnóstica 2</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="text" id="hd2" class="input-field" placeholder="Diagnóstico diferencial" style="flex:2;" />
+          <input type="text" id="hd2-cid" class="input-field" placeholder="CID-10" style="flex:1;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <span class="input-label">Hipótese Diagnóstica 3</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="text" id="hd3" class="input-field" placeholder="Diagnóstico diferencial" style="flex:2;" />
+          <input type="text" id="hd3-cid" class="input-field" placeholder="CID-10" style="flex:1;" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SEÇÃO: CONDUTA E PLANO TERAPÊUTICO ============ -->
+    <div class="section-title">💊 Conduta e Plano Terapêutico</div>
+    
+    <div class="row">
+      <div class="col">
+        <span class="input-label label-bold">EXAMES SOLICITADOS</span>
+        <textarea id="exames-solicitados" rows="4" placeholder="Liste os exames complementares solicitados (ex: Hemograma, Raio-X de tórax, Glicemia...)"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <span class="input-label label-bold">PRESCRIÇÃO / TRATAMENTO</span>
+        <textarea id="prescricao" rows="6" placeholder="01 - &#10;02 - &#10;03 - "></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <span class="input-label label-bold">ORIENTAÇÕES AO PACIENTE</span>
+        <textarea id="orientacoes" rows="4" placeholder="Orientações gerais, cuidados, sinais de alerta, recomendações..."></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <span class="input-label label-bold">PLANO DE SEGUIMENTO</span>
+        <textarea id="seguimento" rows="3" placeholder="Retorno, reavaliação, encaminhamentos..."></textarea>
+      </div>
+      <div class="col">
+        <span class="input-label label-bold">⏰ LEMBRETE DE RETORNO</span>
+        <input type="date" id="data-retorno" class="input-field" />
+        <textarea id="obs-retorno" rows="2" placeholder="Observações do retorno..." style="margin-top:8px;"></textarea>
+        <button type="button" onclick="salvarLembrete()" style="margin-top:8px; width:100%; padding:10px; background:#ff9800; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:700;">
+          🔔 Salvar Lembrete
+        </button>
+      </div>
+    </div>
 
     <div class="action-area">
             <!-- ============ SEÇÃO ESPECIALIZADA - GASTROENTEROLOGIA ============ -->
@@ -1399,6 +1666,211 @@
     </div>
     <!-- ============ FIM SEÇÃO GASTROENTEROLOGIA ============ -->
 
+    <!-- ============ SEÇÃO ESPECIALIZADA - PSIQUIATRIA ============ -->
+    <div id="secao-psiq" class="secao-especializada">
+      <span class="badge-especialidade">🧠 ANAMNESE - PSIQUIATRIA</span>
+
+      <div class="section-title">🗣️ 1. Motivo da Consulta</div>
+      <textarea id="psiq-motivo" rows="2" placeholder="Descreva o motivo da consulta psiquiátrica..."></textarea>
+
+      <div class="section-title">📋 2. Queixa Principal e HDA Psiquiátrica</div>
+      <textarea id="psiq-hda" rows="4" placeholder="História detalhada dos sintomas psiquiátricos (início, evolução, fatores desencadeantes, tratamentos prévios)..."></textarea>
+
+      <div class="section-title">😔 3. Humor e Afeto</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="humor-deprimido"><label for="humor-deprimido">Humor deprimido</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="humor-elevado"><label for="humor-elevado">Humor elevado/eufórico</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="humor-irritavel"><label for="humor-irritavel">Humor irritável</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="humor-ansioso"><label for="humor-ansioso">Humor ansioso</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="humor-labil"><label for="humor-labil">Humor lábil</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="humor-embotado"><label for="humor-embotado">Afeto embotado/achatado</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="humor-inadequado"><label for="humor-inadequado">Afeto inadequado</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="anedonia"><label for="anedonia">Anedonia (perda de prazer)</label></div>
+      </div>
+
+      <div class="section-title">😰 4. Sintomas Ansiosos</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="ansiedade-geral"><label for="ansiedade-geral">Ansiedade generalizada</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="panico"><label for="panico">Crises de pânico</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="fobias"><label for="fobias">Fobias específicas</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="fobia-social"><label for="fobia-social">Fobia social</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="agorafobia"><label for="agorafobia">Agorafobia</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="toc"><label for="toc">Sintomas obsessivo-compulsivos</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="estresse-pos"><label for="estresse-pos">Estresse pós-traumático</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="preocup-excessiva"><label for="preocup-excessiva">Preocupação excessiva</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="tensao-muscular"><label for="tensao-muscular">Tensão muscular</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="inquietacao"><label for="inquietacao">Inquietação</label></div>
+      </div>
+
+      <div class="section-title">💭 5. Pensamento</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="pensa-lento"><label for="pensa-lento">Pensamento lentificado</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="pensa-acelerado"><label for="pensa-acelerado">Pensamento acelerado</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="pensa-desorg"><label for="pensa-desorg">Pensamento desorganizado</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="pensa-persev"><label for="pensa-persev">Perseveração</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ideias-delic"><label for="ideias-delic">Ideias delirantes</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="delic-perseg"><label for="delic-perseg">Delírios persecutórios</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="delic-grandeza"><label for="delic-grandeza">Delírios de grandeza</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="delic-ruina"><label for="delic-ruina">Delírios de ruína</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="delic-culpa"><label for="delic-culpa">Delírios de culpa</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="pensa-magico"><label for="pensa-magico">Pensamento mágico</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="obsessoes"><label for="obsessoes">Obsessões</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ruminacoes"><label for="ruminacoes">Ruminações</label></div>
+      </div>
+
+      <div class="section-title">👁️ 6. Percepção</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="aluc-auditivas"><label for="aluc-auditivas">Alucinações auditivas</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="aluc-visuais"><label for="aluc-visuais">Alucinações visuais</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="aluc-tateis"><label for="aluc-tateis">Alucinações táteis</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="aluc-olfativas"><label for="aluc-olfativas">Alucinações olfativas</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ilusoes"><label for="ilusoes">Ilusões</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="desperson"><label for="desperson">Despersonalização</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="desreal"><label for="desreal">Desrealização</label></div>
+      </div>
+
+      <div class="section-title">🧭 7. Orientação e Consciência</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="orient-preserv"><label for="orient-preserv">Orientado (tempo, espaço, pessoa)</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="desorient-tempo"><label for="desorient-tempo">Desorientado no tempo</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="desorient-esp"><label for="desorient-esp">Desorientado no espaço</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="desorient-pess"><label for="desorient-pess">Desorientado quanto à pessoa</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="confusao-mental"><label for="confusao-mental">Confusão mental</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="rebaixa-consc"><label for="rebaixa-consc">Rebaixamento do nível de consciência</label></div>
+      </div>
+
+      <div class="section-title">🧠 8. Memória e Cognição</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="mem-recente-alt"><label for="mem-recente-alt">Memória recente alterada</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="mem-remota-alt"><label for="mem-remota-alt">Memória remota alterada</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="amnesia"><label for="amnesia">Amnésia</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="confabula"><label for="confabula">Confabulação</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="deficit-atenc"><label for="deficit-atenc">Déficit de atenção/concentração</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="deficit-exec"><label for="deficit-exec">Déficit de funções executivas</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="deficit-linguagem"><label for="deficit-linguagem">Déficit de linguagem</label></div>
+      </div>
+
+      <div class="section-title">💤 9. Sono</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="insonia-inicial"><label for="insonia-inicial">Insônia inicial (dificuldade para dormir)</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="insonia-manut"><label for="insonia-manut">Insônia de manutenção (despertares noturnos)</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="insonia-terminal"><label for="insonia-terminal">Insônia terminal (despertar precoce)</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="hipersonia"><label for="hipersonia">Hipersonia</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="pesadelos"><label for="pesadelos">Pesadelos frequentes</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="terror-noturno"><label for="terror-noturno">Terror noturno</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="sono-nao-repousante"><label for="sono-nao-repousante">Sono não repousante</label></div>
+      </div>
+
+      <div class="section-title">🍽️ 10. Apetite e Alimentação</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="apetite-reduz"><label for="apetite-reduz">Apetite reduzido</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="apetite-aument"><label for="apetite-aument">Apetite aumentado</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="perda-peso-psiq"><label for="perda-peso-psiq">Perda de peso</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ganho-peso"><label for="ganho-peso">Ganho de peso</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="compuls-alim"><label for="compuls-alim">Compulsão alimentar</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="restric-alim"><label for="restric-alim">Restrição alimentar</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="purgacao"><label for="purgacao">Purgação</label></div>
+      </div>
+
+      <div class="section-title">⚡ 11. Energia e Psicomotricidade</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="fadiga-psiq"><label for="fadiga-psiq">Fadiga/cansaço excessivo</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="anergia"><label for="anergia">Anergia (falta de energia)</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="agitacao-psicomotora"><label for="agitacao-psicomotora">Agitação psicomotora</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="retardo-psicomotor"><label for="retardo-psicomotor">Retardo psicomotor</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="catatonia"><label for="catatonia">Sintomas catatônicos</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="akathisia"><label for="akathisia">Acatisia</label></div>
+      </div>
+
+      <div class="section-title">💀 12. Ideação Suicida e Comportamento</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="ideacao-suicida"><label for="ideacao-suicida">Ideação suicida passiva</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ideacao-ativa"><label for="ideacao-ativa">Ideação suicida ativa</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="plano-suicida"><label for="plano-suicida">Plano suicida estruturado</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="tentativa-previa"><label for="tentativa-previa">Tentativa de suicídio prévia</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="autolesao"><label for="autolesao">Comportamento autolesivo</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ideacao-homicida"><label for="ideacao-homicida">Ideação homicida</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="impulsividade"><label for="impulsividade">Impulsividade aumentada</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="agressividade"><label for="agressividade">Agressividade</label></div>
+      </div>
+
+      <div class="section-title">👥 13. Funcionamento Social e Ocupacional</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="isolamento-social"><label for="isolamento-social">Isolamento social</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="prejuizo-trab"><label for="prejuizo-trab">Prejuízo no trabalho/estudos</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="conflitos-fam"><label for="conflitos-fam">Conflitos familiares</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="conflitos-inter"><label for="conflitos-inter">Dificuldades interpessoais</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="perda-autonomia"><label for="perda-autonomia">Perda de autonomia</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="negligencia-auto"><label for="negligencia-auto">Negligência com autocuidado</label></div>
+      </div>
+
+      <div class="section-title">💊 14. Uso de Substâncias</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="uso-alcool-psiq"><label for="uso-alcool-psiq">Uso de álcool</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="depend-alcool"><label for="depend-alcool">Dependência de álcool</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="uso-tabaco-psiq"><label for="uso-tabaco-psiq">Uso de tabaco</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="uso-cannabis"><label for="uso-cannabis">Uso de cannabis</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="uso-cocaina"><label for="uso-cocaina">Uso de cocaína/crack</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="uso-anfeta"><label for="uso-anfeta">Uso de anfetaminas</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="uso-benzod"><label for="uso-benzod">Uso de benzodiazepínicos</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="uso-opioides"><label for="uso-opioides">Uso de opioides</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="uso-outras"><label for="uso-outras">Outras substâncias</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="abstinencia"><label for="abstinencia">Síndrome de abstinência</label></div>
+      </div>
+
+      <div class="section-title">🧬 15. Antecedentes Psiquiátricos Pessoais</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="ant-depressao"><label for="ant-depressao">Depressão prévia</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ant-mania"><label for="ant-mania">Mania/hipomania prévia</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ant-psicose"><label for="ant-psicose">Episódio psicótico prévio</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ant-ansiedade"><label for="ant-ansiedade">Transtorno de ansiedade prévio</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ant-toc-prev"><label for="ant-toc-prev">TOC prévio</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ant-tept"><label for="ant-tept">TEPT prévio</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="ant-aliment"><label for="ant-aliment">Transtorno alimentar prévio</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="internan-psiq"><label for="internan-psiq">Internação psiquiátrica prévia</label></div>
+      </div>
+
+      <div class="section-title">👨‍👩‍👧‍👦 16. Antecedentes Familiares Psiquiátricos</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="fam-depressao"><label for="fam-depressao">Depressão na família</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="fam-bipolar"><label for="fam-bipolar">Transtorno bipolar na família</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="fam-esquizo"><label for="fam-esquizo">Esquizofrenia na família</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="fam-suicidio"><label for="fam-suicidio">Suicídio na família</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="fam-alcool"><label for="fam-alcool">Alcoolismo na família</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="fam-drogas"><label for="fam-drogas">Dependência química na família</label></div>
+      </div>
+
+      <div class="section-title">💊 17. Medicações Psiquiátricas Atuais/Prévias</div>
+      <textarea id="psiq-meds" rows="4" placeholder="Liste medicações psiquiátricas em uso ou já utilizadas (nome, dose, tempo de uso, resposta, efeitos colaterais)..."></textarea>
+
+      <div class="section-title">🧘 18. Tratamentos Prévios</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="trat-psicoterapia"><label for="trat-psicoterapia">Psicoterapia prévia</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="trat-tcc"><label for="trat-tcc">TCC (Terapia Cognitivo-Comportamental)</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="trat-psicanalise"><label for="trat-psicanalise">Psicanálise</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="trat-grupo"><label for="trat-grupo">Terapia em grupo</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="trat-ect"><label for="trat-ect">Eletroconvulsoterapia (ECT)</label></div>
+      </div>
+
+      <div class="section-title">👶 19. História do Desenvolvimento</div>
+      <textarea id="psiq-desenvolvimento" rows="3" placeholder="Gestação, parto, desenvolvimento neuropsicomotor, marcos do desenvolvimento..."></textarea>
+
+      <div class="section-title">🏠 20. História Pessoal e Social</div>
+      <textarea id="psiq-historia-social" rows="4" placeholder="Infância, escolaridade, relacionamentos, trabalho, traumas, eventos estressantes, suporte social, estrutura familiar..."></textarea>
+
+      <div class="section-title">⚖️ 21. Questões Médico-Legais</div>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="judicializacao"><label for="judicializacao">Processo judicial em andamento</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="interdicao"><label for="interdicao">Interdição/curatela</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="medida-protet"><label for="medida-protet">Medida protetiva</label></div>
+        <div class="checkbox-item"><input type="checkbox" id="hist-forense"><label for="hist-forense">História forense</label></div>
+      </div>
+
+      <div class="section-title">📝 22. Observações Adicionais</div>
+      <textarea id="psiq-obs" rows="3" placeholder="Outras informações relevantes..."></textarea>
+    </div>
+    <!-- ============ FIM SEÇÃO PSIQUIATRIA ============ -->
+
       <button class="btn-generate" onclick="gerarRelatorio()">GERAR EVOLUÇÃO</button>
       <button class="btn-reset" onclick="limparTudo()">LIMPAR TUDO</button>
     </div>
@@ -1410,6 +1882,7 @@
       <textarea id="finalReport" readonly></textarea>
       <div class="modal-actions">
         <button class="btn-modal btn-copy" onclick="copiar()">Copiar Texto</button>
+        <button class="btn-modal" style="background:#4caf50;" onclick="salvarAnamneseAtual()">💾 Salvar Anamnese</button>
         <button class="btn-modal btn-pdf" onclick="salvarPDF()">Salvar PDF</button>
         <button class="btn-modal btn-close" onclick="fecharModal()">Fechar / Editar</button>
       </div>
@@ -1659,9 +2132,273 @@
     <button type="button" onclick="atualizaWells()">Calcular Wells</button>
     <p id="wells-resultado"></p>
   </section>
+
+  <!-- CHA2DS2-VASc Score -->
+  <section>
+    <h3>CHA2DS2-VASc (Risco de AVC em FA)</h3>
+
+    <label>
+      <input type="checkbox" id="cha2-chf">
+      Insuficiência Cardíaca Congestiva (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="cha2-has">
+      Hipertensão (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="cha2-idade75">
+      Idade ≥ 75 anos (+2)
+    </label>
+
+    <label>
+      <input type="checkbox" id="cha2-dm">
+      Diabetes Mellitus (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="cha2-avc">
+      AVC/AIT/Tromboembolismo prévio (+2)
+    </label>
+
+    <label>
+      <input type="checkbox" id="cha2-vasc">
+      Doença vascular (IAM, placa aórtica, DAP) (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="cha2-idade65">
+      Idade 65-74 anos (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="cha2-sexo">
+      Sexo feminino (+1)
+    </label>
+
+    <button type="button" onclick="atualizaCHA2DS2VASc()">Calcular CHA2DS2-VASc</button>
+    <p id="cha2-resultado"></p>
+  </section>
+
+  <!-- HAS-BLED Score -->
+  <section>
+    <h3>HAS-BLED (Risco de Sangramento)</h3>
+
+    <label>
+      <input type="checkbox" id="hasbled-has">
+      Hipertensão não controlada (PAS &gt; 160) (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="hasbled-renal">
+      Função renal anormal (diálise, Cr &gt; 2.6) (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="hasbled-hepat">
+      Função hepática anormal (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="hasbled-avc">
+      AVC prévio (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="hasbled-sangra">
+      História de sangramento (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="hasbled-inr">
+      INR lábil (< 60% no alvo) (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="hasbled-idade">
+      Idade &gt; 65 anos (+1)
+    </label>
+
+    <label>
+      <input type="checkbox" id="hasbled-drogas">
+      Drogas (antiagregantes, AINEs) ou álcool (+1)
+    </label>
+
+    <button type="button" onclick="atualizaHASBLED()">Calcular HAS-BLED</button>
+    <p id="hasbled-resultado"></p>
+  </section>
 </div>
 
   <script>
+
+    // ============ DARK MODE ============
+    function toggleDarkMode() {
+      const body = document.body;
+      const btn = document.getElementById('btnDarkMode');
+      
+      body.classList.toggle('dark-mode');
+      
+      if (body.classList.contains('dark-mode')) {
+        btn.innerHTML = '☀️ Modo Claro';
+        localStorage.setItem('darkMode', 'enabled');
+      } else {
+        btn.innerHTML = '🌙 Modo Escuro';
+        localStorage.setItem('darkMode', 'disabled');
+      }
+    }
+
+    // Carregar preferência de dark mode
+    window.addEventListener('DOMContentLoaded', function() {
+      const darkMode = localStorage.getItem('darkMode');
+      const btn = document.getElementById('btnDarkMode');
+      
+      if (darkMode === 'enabled') {
+        document.body.classList.add('dark-mode');
+        if(btn) btn.innerHTML = '☀️ Modo Claro';
+      }
+    });
+
+    // ============ BACKUP/EXPORTAR/IMPORTAR ============
+    function toggleMenuBackup() {
+      const menu = document.getElementById('menuBackup');
+      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Fechar menu ao clicar fora
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('menuBackup');
+      const btn = document.getElementById('btnBackup');
+      if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+    function exportarDados() {
+      try {
+        // Pegar histórico
+        const historico = localStorage.getItem('anamnese_historico') || '[]';
+        const credenciais = localStorage.getItem('anamnese_credentials') || '{}';
+        
+        const backup = {
+          version: '1.0',
+          timestamp: new Date().toISOString(),
+          data: {
+            historico: JSON.parse(historico),
+            credenciais: JSON.parse(credenciais)
+          }
+        };
+
+        const dataStr = JSON.stringify(backup, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        const filename = `anamnese-backup-${new Date().toISOString().split('T')[0]}.json`;
+        link.href = url;
+        link.download = filename;
+        link.click();
+        
+        URL.revokeObjectURL(url);
+        alert('✅ Backup exportado com sucesso!');
+        toggleMenuBackup();
+      } catch (e) {
+        alert('❌ Erro ao exportar backup: ' + e.message);
+      }
+    }
+
+    function importarDados(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const backup = JSON.parse(e.target.result);
+          
+          if (!backup.data || !backup.data.historico) {
+            throw new Error('Arquivo de backup inválido');
+          }
+
+          if (!confirm('⚠️ Isso substituirá todos os dados atuais. Deseja continuar?')) {
+            return;
+          }
+
+          // Restaurar dados
+          localStorage.setItem('anamnese_historico', JSON.stringify(backup.data.historico));
+          
+          if (backup.data.credenciais && backup.data.credenciais.usuario) {
+            localStorage.setItem('anamnese_credentials', JSON.stringify(backup.data.credenciais));
+          }
+
+          alert('✅ Backup importado com sucesso! A página será recarregada.');
+          location.reload();
+        } catch (e) {
+          alert('❌ Erro ao importar backup: ' + e.message);
+        }
+      };
+      reader.readAsText(file);
+      
+      // Limpar input
+      event.target.value = '';
+      toggleMenuBackup();
+    }
+
+    // ============ ATALHOS DE TECLADO ============
+    document.addEventListener('keydown', function(e) {
+      // Ctrl+S: Salvar paciente
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        if (typeof window.salvarPacienteAtual === 'function') {
+          window.salvarPacienteAtual();
+        }
+      }
+      
+      // Ctrl+G: Gerar relatório
+      if (e.ctrlKey && e.key === 'g') {
+        e.preventDefault();
+        if (typeof gerarRelatorio === 'function') {
+          gerarRelatorio();
+        }
+      }
+      
+      // Ctrl+H: Abrir histórico
+      if (e.ctrlKey && e.key === 'h') {
+        e.preventDefault();
+        if (typeof window.abrirHistorico === 'function') {
+          window.abrirHistorico();
+        }
+      }
+      
+      // Ctrl+E: Abrir scores
+      if (e.ctrlKey && e.key === 'e') {
+        e.preventDefault();
+        if (typeof abrirScores === 'function') {
+          abrirScores();
+        }
+      }
+      
+      // Esc: Fechar modais
+      if (e.key === 'Escape') {
+        const modalResultado = document.getElementById('modalResultado');
+        const modalHistorico = document.getElementById('modalHistorico');
+        const modalScores = document.getElementById('modal-scores');
+        const modalEsp = document.getElementById('modalEspecialidades');
+        
+        if (modalResultado && modalResultado.style.display === 'flex') {
+          fecharModal();
+        }
+        if (modalHistorico && modalHistorico.classList.contains('show')) {
+          window.fecharHistorico();
+        }
+        if (modalScores && modalScores.style.display === 'block') {
+          fecharScores();
+        }
+        if (modalEsp && modalEsp.classList.contains('active')) {
+          fecharModalEspecialidades();
+        }
+      }
+    });
 
     // ============ FUNÇÕES ESPECIALIDADES ============
     function abrirModalEspecialidades() {
@@ -1679,6 +2416,12 @@
         document.getElementById('secao-gastro').classList.add('active');
         setTimeout(() => {
           const elem = document.getElementById('secao-gastro');
+          if(elem) elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } else if (tipo === 'psiq') {
+        document.getElementById('secao-psiq').classList.add('active');
+        setTimeout(() => {
+          const elem = document.getElementById('secao-psiq');
           if(elem) elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       }
@@ -1730,6 +2473,36 @@
       drogas: "Não"
     };
     const alertTypes = new Set(["alergias","internacao","tabagismo","etilismo","drogas"]);
+
+    // ============ ARMAZENAMENTO DE SCORES CALCULADOS ============
+    const scoresCalculados = {};
+
+    function salvarScore(nome, pontuacao, interpretacao) {
+      scoresCalculados[nome] = {
+        pontuacao: pontuacao,
+        interpretacao: interpretacao,
+        timestamp: new Date().toLocaleString('pt-BR')
+      };
+    }
+
+    function limparScores() {
+      Object.keys(scoresCalculados).forEach(key => delete scoresCalculados[key]);
+    }
+
+    function obterScoresTexto() {
+      const keys = Object.keys(scoresCalculados);
+      if (keys.length === 0) return "";
+      
+      let texto = "\n# SCORES CLÍNICOS CALCULADOS #\n";
+      keys.forEach(nome => {
+        const score = scoresCalculados[nome];
+        texto += `\n**${nome}:**\n`;
+        texto += `  Pontuação: ${score.pontuacao}\n`;
+        texto += `  Interpretação: ${score.interpretacao}\n`;
+        texto += `  Calculado em: ${score.timestamp}\n`;
+      });
+      return texto;
+    }
 
     function setOption(type, value){
       state[type] = value;
@@ -1963,6 +2736,188 @@ function capturarDadosGastro() {
   return linhas;
 }
 
+function capturarDadosPsiq() {
+  const linhas = [];
+  const psiqAtiva = document.getElementById('secao-psiq')?.classList.contains('active');
+  if (!psiqAtiva) return linhas;
+  
+  linhas.push("");
+  linhas.push("# ANAMNESE - PSIQUIATRIA #");
+  linhas.push("");
+  
+  function getChecked(ids) {
+    return ids.filter(id => document.getElementById(id)?.checked)
+              .map(id => document.querySelector('label[for="' + id + '"]')?.textContent || id);
+  }
+  
+  function getTextarea(id) {
+    const el = document.getElementById(id);
+    return el && el.value ? el.value.trim() : "";
+  }
+  
+  // Motivo da consulta
+  const motivo = getTextarea('psiq-motivo');
+  if (motivo) {
+    linhas.push("**MOTIVO DA CONSULTA:**");
+    linhas.push(motivo);
+    linhas.push("");
+  }
+  
+  // HDA Psiquiátrica
+  const hdaPsiq = getTextarea('psiq-hda');
+  if (hdaPsiq) {
+    linhas.push("**HISTÓRIA DA DOENÇA ATUAL (PSIQUIÁTRICA):**");
+    linhas.push(hdaPsiq);
+    linhas.push("");
+  }
+  
+  // Humor e Afeto
+  const humor = getChecked(['humor-deprimido','humor-elevado','humor-irritavel','humor-ansioso','humor-labil','humor-embotado','humor-inadequado','anedonia']);
+  if (humor.length > 0) {
+    linhas.push("**HUMOR E AFETO:** " + humor.join(", "));
+    linhas.push("");
+  }
+  
+  // Sintomas Ansiosos
+  const ansiedade = getChecked(['ansiedade-geral','panico','fobias','fobia-social','agorafobia','toc','estresse-pos','preocup-excessiva','tensao-muscular','inquietacao']);
+  if (ansiedade.length > 0) {
+    linhas.push("**SINTOMAS ANSIOSOS:** " + ansiedade.join(", "));
+    linhas.push("");
+  }
+  
+  // Pensamento
+  const pensamento = getChecked(['pensa-lento','pensa-acelerado','pensa-desorg','pensa-persev','ideias-delic','delic-perseg','delic-grandeza','delic-ruina','delic-culpa','pensa-magico','obsessoes','ruminacoes']);
+  if (pensamento.length > 0) {
+    linhas.push("**PENSAMENTO:** " + pensamento.join(", "));
+    linhas.push("");
+  }
+  
+  // Percepção
+  const percepcao = getChecked(['aluc-auditivas','aluc-visuais','aluc-tateis','aluc-olfativas','ilusoes','desperson','desreal']);
+  if (percepcao.length > 0) {
+    linhas.push("**PERCEPÇÃO:** " + percepcao.join(", "));
+    linhas.push("");
+  }
+  
+  // Orientação e Consciência
+  const orientacao = getChecked(['orient-preserv','desorient-tempo','desorient-esp','desorient-pess','confusao-mental','rebaixa-consc']);
+  if (orientacao.length > 0) {
+    linhas.push("**ORIENTAÇÃO E CONSCIÊNCIA:** " + orientacao.join(", "));
+    linhas.push("");
+  }
+  
+  // Memória e Cognição
+  const memoria = getChecked(['mem-recente-alt','mem-remota-alt','amnesia','confabula','deficit-atenc','deficit-exec','deficit-linguagem']);
+  if (memoria.length > 0) {
+    linhas.push("**MEMÓRIA E COGNIÇÃO:** " + memoria.join(", "));
+    linhas.push("");
+  }
+  
+  // Sono
+  const sono = getChecked(['insonia-inicial','insonia-manut','insonia-terminal','hipersonia','pesadelos','terror-noturno','sono-nao-repousante']);
+  if (sono.length > 0) {
+    linhas.push("**SONO:** " + sono.join(", "));
+    linhas.push("");
+  }
+  
+  // Apetite
+  const apetite = getChecked(['apetite-reduz','apetite-aument','perda-peso-psiq','ganho-peso','compuls-alim','restric-alim','purgacao']);
+  if (apetite.length > 0) {
+    linhas.push("**APETITE E ALIMENTAÇÃO:** " + apetite.join(", "));
+    linhas.push("");
+  }
+  
+  // Energia e Psicomotricidade
+  const energia = getChecked(['fadiga-psiq','anergia','agitacao-psicomotora','retardo-psicomotor','catatonia','akathisia']);
+  if (energia.length > 0) {
+    linhas.push("**ENERGIA E PSICOMOTRICIDADE:** " + energia.join(", "));
+    linhas.push("");
+  }
+  
+  // Ideação Suicida
+  const suicida = getChecked(['ideacao-suicida','ideacao-ativa','plano-suicida','tentativa-previa','autolesao','ideacao-homicida','impulsividade','agressividade']);
+  if (suicida.length > 0) {
+    linhas.push("**⚠️ IDEAÇÃO SUICIDA E COMPORTAMENTO:** " + suicida.join(", "));
+    linhas.push("");
+  }
+  
+  // Funcionamento Social
+  const social = getChecked(['isolamento-social','prejuizo-trab','conflitos-fam','conflitos-inter','perda-autonomia','negligencia-auto']);
+  if (social.length > 0) {
+    linhas.push("**FUNCIONAMENTO SOCIAL E OCUPACIONAL:** " + social.join(", "));
+    linhas.push("");
+  }
+  
+  // Uso de Substâncias
+  const substancias = getChecked(['uso-alcool-psiq','depend-alcool','uso-tabaco-psiq','uso-cannabis','uso-cocaina','uso-anfeta','uso-benzod','uso-opioides','uso-outras','abstinencia']);
+  if (substancias.length > 0) {
+    linhas.push("**USO DE SUBSTÂNCIAS:** " + substancias.join(", "));
+    linhas.push("");
+  }
+  
+  // Antecedentes Psiquiátricos
+  const antPsiq = getChecked(['ant-depressao','ant-mania','ant-psicose','ant-ansiedade','ant-toc-prev','ant-tept','ant-aliment','internan-psiq']);
+  if (antPsiq.length > 0) {
+    linhas.push("**ANTECEDENTES PSIQUIÁTRICOS PESSOAIS:** " + antPsiq.join(", "));
+    linhas.push("");
+  }
+  
+  // Antecedentes Familiares
+  const famPsiq = getChecked(['fam-depressao','fam-bipolar','fam-esquizo','fam-suicidio','fam-alcool','fam-drogas']);
+  if (famPsiq.length > 0) {
+    linhas.push("**ANTECEDENTES FAMILIARES PSIQUIÁTRICOS:** " + famPsiq.join(", "));
+    linhas.push("");
+  }
+  
+  // Medicações Psiquiátricas
+  const meds = getTextarea('psiq-meds');
+  if (meds) {
+    linhas.push("**MEDICAÇÕES PSIQUIÁTRICAS:**");
+    linhas.push(meds);
+    linhas.push("");
+  }
+  
+  // Tratamentos Prévios
+  const tratamentos = getChecked(['trat-psicoterapia','trat-tcc','trat-psicanalise','trat-grupo','trat-ect']);
+  if (tratamentos.length > 0) {
+    linhas.push("**TRATAMENTOS PRÉVIOS:** " + tratamentos.join(", "));
+    linhas.push("");
+  }
+  
+  // História do Desenvolvimento
+  const desenvolvimento = getTextarea('psiq-desenvolvimento');
+  if (desenvolvimento) {
+    linhas.push("**HISTÓRIA DO DESENVOLVIMENTO:**");
+    linhas.push(desenvolvimento);
+    linhas.push("");
+  }
+  
+  // História Social
+  const historiaSocial = getTextarea('psiq-historia-social');
+  if (historiaSocial) {
+    linhas.push("**HISTÓRIA PESSOAL E SOCIAL:**");
+    linhas.push(historiaSocial);
+    linhas.push("");
+  }
+  
+  // Questões Médico-Legais
+  const legal = getChecked(['judicializacao','interdicao','medida-protet','hist-forense']);
+  if (legal.length > 0) {
+    linhas.push("**QUESTÕES MÉDICO-LEGAIS:** " + legal.join(", "));
+    linhas.push("");
+  }
+  
+  // Observações
+  const obs = getTextarea('psiq-obs');
+  if (obs) {
+    linhas.push("**OBSERVAÇÕES ADICIONAIS:**");
+    linhas.push(obs);
+    linhas.push("");
+  }
+  
+  return linhas;
+}
+
     function montarTextoRelatorioBase(){
       const linhas = [];
       linhas.push("## ADMISSÃO / EVOLUÇÃO ##");
@@ -2030,7 +2985,414 @@ function capturarDadosGastro() {
       linhas.push("");
       const dadosGastro = capturarDadosGastro();
       dadosGastro.forEach(linha => linhas.push(linha));
+      
+      const dadosPsiq = capturarDadosPsiq();
+      dadosPsiq.forEach(linha => linhas.push(linha));
+      
+      // Adicionar Diagnósticos
+      if (v("hd1") || v("hd2") || v("hd3")) {
+        linhas.push("");
+        linhas.push("# DIAGNÓSTICOS DIFERENCIAIS / HIPÓTESES DIAGNÓSTICAS #");
+        linhas.push("");
+        if (v("hd1")) {
+          const cid1 = v("hd1-cid");
+          linhas.push(`**HIPÓTESE DIAGNÓSTICA 1 (Principal):** ${v("hd1")}${cid1 ? " (" + cid1 + ")" : ""}`);
+        }
+        if (v("hd2")) {
+          const cid2 = v("hd2-cid");
+          linhas.push(`**Hipótese Diagnóstica 2:** ${v("hd2")}${cid2 ? " (" + cid2 + ")" : ""}`);
+        }
+        if (v("hd3")) {
+          const cid3 = v("hd3-cid");
+          linhas.push(`**Hipótese Diagnóstica 3:** ${v("hd3")}${cid3 ? " (" + cid3 + ")" : ""}`);
+        }
+        linhas.push("");
+      }
+      
+      // Adicionar Conduta e Plano
+      if (v("exames-solicitados") || v("prescricao") || v("orientacoes") || v("seguimento")) {
+        linhas.push("");
+        linhas.push("# CONDUTA E PLANO TERAPÊUTICO #");
+        linhas.push("");
+        
+        if (v("exames-solicitados")) {
+          linhas.push("**EXAMES SOLICITADOS:**");
+          linhas.push(v("exames-solicitados"));
+          linhas.push("");
+        }
+        
+        if (v("prescricao")) {
+          linhas.push("**PRESCRIÇÃO / TRATAMENTO:**");
+          linhas.push(v("prescricao"));
+          linhas.push("");
+        }
+        
+        if (v("orientacoes")) {
+          linhas.push("**ORIENTAÇÕES AO PACIENTE:**");
+          linhas.push(v("orientacoes"));
+          linhas.push("");
+        }
+        
+        if (v("seguimento")) {
+          linhas.push("**PLANO DE SEGUIMENTO:**");
+          linhas.push(v("seguimento"));
+          linhas.push("");
+        }
+      }
+      
+      // Adicionar scores calculados (se houver)
+      const scoresTexto = obterScoresTexto();
+      if (scoresTexto) {
+        linhas.push(scoresTexto);
+      }
+      
       return linhas.join("\n");
+    }
+
+    // ============ FORMATAÇÃO HDA ============
+    function formatarHDA(tipo) {
+      const textarea = document.getElementById('hda');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      
+      if (!selectedText) {
+        alert('⚠️ Selecione o texto que deseja formatar primeiro!');
+        return;
+      }
+      
+      let formattedText = '';
+      if (tipo === 'bold') {
+        formattedText = `**${selectedText}**`;
+      } else if (tipo === 'italic') {
+        formattedText = `*${selectedText}*`;
+      }
+      
+      textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+      
+      // Manter foco e ajustar seleção
+      textarea.focus();
+      textarea.selectionStart = start;
+      textarea.selectionEnd = start + formattedText.length;
+    }
+    
+    function aplicarTamanhoFonteHDA() {
+      const textarea = document.getElementById('hda');
+      const select = document.getElementById('hdaFontSize');
+      const tamanho = select.value;
+      
+      if (!tamanho) {
+        alert('⚠️ Selecione um tamanho de fonte primeiro!');
+        return;
+      }
+      
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      
+      if (!selectedText) {
+        alert('⚠️ Selecione o texto que deseja modificar primeiro!');
+        return;
+      }
+      
+      let formattedText = '';
+      if (tamanho === 'small') {
+        formattedText = `[PEQUENO]${selectedText}[/PEQUENO]`;
+      } else if (tamanho === 'normal') {
+        formattedText = `[NORMAL]${selectedText}[/NORMAL]`;
+      } else if (tamanho === 'large') {
+        formattedText = `[GRANDE]${selectedText}[/GRANDE]`;
+      }
+      
+      textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+      
+      // Resetar seleção
+      select.value = '';
+      
+      // Manter foco
+      textarea.focus();
+      textarea.selectionStart = start;
+      textarea.selectionEnd = start + formattedText.length;
+    }
+
+    // ============ CID-10 - BANCO SIMPLIFICADO ============
+    const CID10_DATABASE = [
+      // Doenças mais comuns
+      {codigo: "I10", descricao: "Hipertensão essencial (primária)"},
+      {codigo: "E11", descricao: "Diabetes mellitus tipo 2"},
+      {codigo: "E78", descricao: "Distúrbios do metabolismo de lipoproteínas"},
+      {codigo: "J06.9", descricao: "Infecção aguda das vias aéreas superiores"},
+      {codigo: "J18.9", descricao: "Pneumonia não especificada"},
+      {codigo: "J20.9", descricao: "Bronquite aguda não especificada"},
+      {codigo: "J45", descricao: "Asma"},
+      {codigo: "K21", descricao: "Doença do refluxo gastroesofágico"},
+      {codigo: "K29", descricao: "Gastrite e duodenite"},
+      {codigo: "K30", descricao: "Dispepsia"},
+      {codigo: "K59.0", descricao: "Constipação"},
+      {codigo: "K59.1", descricao: "Diarreia funcional"},
+      {codigo: "R10.4", descricao: "Dores abdominais e pélvicas"},
+      {codigo: "R51", descricao: "Cefaleia"},
+      {codigo: "R50", descricao: "Febre de origem desconhecida"},
+      {codigo: "M54.5", descricao: "Dor lombar baixa"},
+      {codigo: "M79.1", descricao: "Mialgia"},
+      {codigo: "A09", descricao: "Diarreia e gastroenterite"},
+      {codigo: "N39.0", descricao: "Infecção do trato urinário"},
+      {codigo: "L50", descricao: "Urticária"},
+      
+      // Psiquiatria
+      {codigo: "F32", descricao: "Episódios depressivos"},
+      {codigo: "F33", descricao: "Transtorno depressivo recorrente"},
+      {codigo: "F41.1", descricao: "Transtorno de ansiedade generalizada"},
+      {codigo: "F41.0", descricao: "Transtorno de pânico"},
+      {codigo: "F40", descricao: "Transtornos fóbico-ansiosos"},
+      {codigo: "F42", descricao: "Transtorno obsessivo-compulsivo"},
+      {codigo: "F43.1", descricao: "Transtorno de estresse pós-traumático"},
+      {codigo: "F31", descricao: "Transtorno afetivo bipolar"},
+      {codigo: "F20", descricao: "Esquizofrenia"},
+      {codigo: "F10", descricao: "Transtornos mentais e comportamentais devido ao uso de álcool"},
+      {codigo: "F17", descricao: "Transtornos mentais e comportamentais devido ao uso de fumo"},
+      {codigo: "F50", descricao: "Transtornos alimentares"},
+      {codigo: "F51", descricao: "Transtornos do sono não-orgânicos"},
+      
+      // Cardiologia
+      {codigo: "I20", descricao: "Angina pectoris"},
+      {codigo: "I21", descricao: "Infarto agudo do miocárdio"},
+      {codigo: "I48", descricao: "Fibrilação e flutter atrial"},
+      {codigo: "I50", descricao: "Insuficiência cardíaca"},
+      {codigo: "I63", descricao: "Infarto cerebral"},
+      {codigo: "I64", descricao: "Acidente vascular cerebral"},
+      
+      // Outros
+      {codigo: "B34.9", descricao: "Infecção viral não especificada"},
+      {codigo: "G43", descricao: "Enxaqueca"},
+      {codigo: "G44", descricao: "Outras síndromes de cefaleia"},
+      {codigo: "Z00", descricao: "Exame médico geral"},
+      {codigo: "Z71", descricao: "Orientação e aconselhamento"},
+    ];
+
+    function buscarCID10() {
+      const termo = document.getElementById('busca-cid').value.trim().toLowerCase();
+      if (!termo) {
+        alert('⚠️ Digite um termo para buscar!');
+        return;
+      }
+      
+      const resultados = CID10_DATABASE.filter(item => 
+        item.codigo.toLowerCase().includes(termo) ||
+        item.descricao.toLowerCase().includes(termo)
+      );
+      
+      const divResultados = document.getElementById('resultados-cid');
+      
+      if (resultados.length === 0) {
+        divResultados.innerHTML = '<p style="color:#999; font-size:0.9rem;">Nenhum resultado encontrado. Tente outro termo.</p>';
+        divResultados.style.display = 'block';
+        return;
+      }
+      
+      let html = '<p style="font-weight:700; margin-bottom:8px; font-size:0.9rem;">Clique para selecionar:</p>';
+      resultados.forEach(item => {
+        html += `
+          <div onclick="selecionarCID('${item.codigo}', '${item.descricao.replace(/'/g, "\\'")}');" 
+               style="padding:8px; margin:4px 0; background:white; border-left:3px solid var(--primary); border-radius:4px; cursor:pointer; transition:0.2s;"
+               onmouseover="this.style.background='#e0f7fa'" 
+               onmouseout="this.style.background='white'">
+            <strong style="color:var(--primary);">${item.codigo}</strong> - ${item.descricao}
+          </div>
+        `;
+      });
+      
+      divResultados.innerHTML = html;
+      divResultados.style.display = 'block';
+    }
+
+    function selecionarCID(codigo, descricao) {
+      // Preencher primeiro HD vazio
+      if (!v('hd1')) {
+        document.getElementById('hd1').value = descricao;
+        document.getElementById('hd1-cid').value = codigo;
+      } else if (!v('hd2')) {
+        document.getElementById('hd2').value = descricao;
+        document.getElementById('hd2-cid').value = codigo;
+      } else if (!v('hd3')) {
+        document.getElementById('hd3').value = descricao;
+        document.getElementById('hd3-cid').value = codigo;
+      } else {
+        alert('⚠️ Todas as hipóteses diagnósticas já estão preenchidas!');
+        return;
+      }
+      
+      // Limpar busca
+      document.getElementById('busca-cid').value = '';
+      document.getElementById('resultados-cid').style.display = 'none';
+      
+      alert(`✅ CID-10 adicionado: ${codigo} - ${descricao}`);
+    }
+
+    // ============ LEMBRETES E ALERTAS ============
+    const LEMBRETES_KEY = 'anamnese_lembretes';
+
+    function salvarLembrete() {
+      const nomePaciente = v('nome');
+      const dataRetorno = document.getElementById('data-retorno').value;
+      const obsRetorno = v('obs-retorno');
+      
+      if (!nomePaciente) {
+        alert('⚠️ Preencha o nome do paciente primeiro!');
+        return;
+      }
+      
+      if (!dataRetorno) {
+        alert('⚠️ Selecione uma data de retorno!');
+        return;
+      }
+      
+      const lembretes = obterLembretes();
+      
+      const lembrete = {
+        id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        paciente: nomePaciente,
+        data: dataRetorno,
+        observacao: obsRetorno,
+        criado: new Date().toISOString()
+      };
+      
+      lembretes.push(lembrete);
+      localStorage.setItem(LEMBRETES_KEY, JSON.stringify(lembretes));
+      
+      alert(`✅ Lembrete de retorno salvo para ${nomePaciente} em ${formatarDataBR(dataRetorno)}!`);
+      
+      // Limpar campos
+      document.getElementById('data-retorno').value = '';
+      document.getElementById('obs-retorno').value = '';
+      
+      // Atualizar badge
+      atualizarBadgeLembretes();
+    }
+
+    function obterLembretes() {
+      try {
+        const data = localStorage.getItem(LEMBRETES_KEY);
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function formatarDataBR(dataISO) {
+      if (!dataISO) return '';
+      const partes = dataISO.split('-');
+      return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    function verificarLembretesHoje() {
+      const lembretes = obterLembretes();
+      const hoje = new Date().toISOString().split('T')[0];
+      
+      const lembretesHoje = lembretes.filter(l => l.data === hoje);
+      
+      if (lembretesHoje.length > 0) {
+        let msg = '🔔 LEMBRETES DE HOJE:\n\n';
+        lembretesHoje.forEach(l => {
+          msg += `📋 ${l.paciente}\n`;
+          if (l.observacao) msg += `   ${l.observacao}\n`;
+          msg += '\n';
+        });
+        
+        setTimeout(() => {
+          if (confirm(msg + 'Deseja ver todos os lembretes?')) {
+            abrirModalLembretes();
+          }
+        }, 2000);
+      }
+    }
+
+    function abrirModalLembretes() {
+      const lembretes = obterLembretes();
+      const hoje = new Date().toISOString().split('T')[0];
+      
+      let html = `
+        <div style="position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; display:flex; align-items:center; justify-content:center;" id="modal-lembretes-overlay" onclick="fecharModalLembretes()">
+          <div onclick="event.stopPropagation()" style="background:white; width:92%; max-width:700px; max-height:85vh; border-radius:12px; padding:20px; overflow-y:auto; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid var(--light);">
+              <h2 style="margin:0; color:var(--primary);">🔔 Lembretes de Retorno</h2>
+              <button onclick="fecharModalLembretes()" style="background:var(--alert); color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:800;">Fechar</button>
+            </div>
+      `;
+      
+      if (lembretes.length === 0) {
+        html += '<p style="text-align:center; color:#999; padding:40px;">Nenhum lembrete cadastrado</p>';
+      } else {
+        // Ordenar por data
+        lembretes.sort((a, b) => new Date(a.data) - new Date(b.data));
+        
+        lembretes.forEach(l => {
+          const isPast = l.data < hoje;
+          const isToday = l.data === hoje;
+          const cor = isToday ? '#4caf50' : isPast ? '#f44336' : '#2196f3';
+          const status = isToday ? '🔔 HOJE' : isPast ? '⚠️ ATRASADO' : '📅 FUTURO';
+          
+          html += `
+            <div style="background:#f9f9f9; border-left:4px solid ${cor}; padding:12px; margin-bottom:10px; border-radius:6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <strong style="color:var(--primary); font-size:1.05rem;">${l.paciente}</strong>
+                <span style="background:${cor}; color:white; padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight:700;">${status}</span>
+              </div>
+              <p style="margin:4px 0; font-size:0.9rem;"><strong>Data:</strong> ${formatarDataBR(l.data)}</p>
+              ${l.observacao ? `<p style="margin:4px 0; font-size:0.85rem; color:#666;">${l.observacao}</p>` : ''}
+              <button onclick="excluirLembrete('${l.id}')" style="margin-top:8px; background:var(--alert); color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:0.8rem; font-weight:700;">🗑️ Excluir</button>
+            </div>
+          `;
+        });
+      }
+      
+      html += '</div></div>';
+      
+      const div = document.createElement('div');
+      div.id = 'modal-lembretes';
+      div.innerHTML = html;
+      document.body.appendChild(div);
+    }
+
+    function fecharModalLembretes() {
+      const modal = document.getElementById('modal-lembretes');
+      if (modal) modal.remove();
+    }
+
+    function excluirLembrete(id) {
+      if (!confirm('Deseja excluir este lembrete?')) return;
+      
+      let lembretes = obterLembretes();
+      lembretes = lembretes.filter(l => l.id !== id);
+      localStorage.setItem(LEMBRETES_KEY, JSON.stringify(lembretes));
+      
+      fecharModalLembretes();
+      abrirModalLembretes();
+      atualizarBadgeLembretes();
+    }
+
+    // Verificar lembretes ao carregar
+    window.addEventListener('load', function() {
+      setTimeout(verificarLembretesHoje, 1000);
+      atualizarBadgeLembretes();
+    });
+
+    function atualizarBadgeLembretes() {
+      const lembretes = obterLembretes();
+      const hoje = new Date().toISOString().split('T')[0];
+      
+      // Contar lembretes de hoje + atrasados
+      const pendentes = lembretes.filter(l => l.data <= hoje).length;
+      
+      const badge = document.getElementById('badge-lembretes');
+      if (badge) {
+        if (pendentes > 0) {
+          badge.textContent = pendentes;
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
     }
 
     function gerarRelatorio(){
@@ -2234,6 +3596,10 @@ ${linhas.map(renderLinha).join("")}
         const el = document.getElementById(id);
         if (el) el.value = "";
       });
+      
+      // Limpar scores calculados
+      limparScores();
+      
       aplicarGenero(sexoAtual);
       initMedsField();
       ensureMedsPrefix();
@@ -2541,8 +3907,37 @@ ${linhas.map(renderLinha).join("")}
     }
 
     const dados = coletarDadosPaciente();
-    const pacientes = obterPacientes();
+    let pacientes = obterPacientes();
+    
+    // Verificar se já existe paciente com o mesmo nome
+    const indiceExistente = pacientes.findIndex(p => 
+      p.nome.toLowerCase() === nome.toLowerCase()
+    );
 
+    if (indiceExistente !== -1) {
+      // Paciente já existe - perguntar se quer atualizar
+      if (confirm(`⚠️ Já existe uma anamnese salva para "${nome}".\n\nDeseja ATUALIZAR a anamnese existente?`)) {
+        // Atualizar paciente existente
+        pacientes[indiceExistente] = {
+          ...pacientes[indiceExistente],
+          idade: dados.fields.idade || '',
+          sexo: dados.fields.sexo || 'M',
+          unidade: dados.fields.unidade || '',
+          queixa: dados.fields.qp || '',
+          dataAtualizacao: new Date().toISOString(),
+          dados: dados
+        };
+        
+        salvarPacientes(pacientes);
+        alert(`✅ Anamnese de "${nome}" ATUALIZADA com sucesso!`);
+        atualizarListaPacientes();
+        return;
+      } else {
+        return; // Cancelou a atualização
+      }
+    }
+
+    // Novo paciente - criar novo registro
     const paciente = {
       id: gerarId(),
       nome: nome,
@@ -2559,6 +3954,11 @@ ${linhas.map(renderLinha).join("")}
 
     alert(`✅ Paciente "${nome}" salvo com sucesso!`);
     atualizarListaPacientes();
+  };
+  
+  // Função para salvar do modal (após gerar relatório)
+  window.salvarAnamneseAtual = function() {
+    window.salvarPacienteAtual();
   };
 
   function carregarPaciente(dados) {
@@ -2667,7 +4067,7 @@ ${linhas.map(renderLinha).join("")}
       <div class="paciente-item">
         <div class="paciente-item-header">
           <div class="paciente-nome">${p.nome || 'Sem nome'}</div>
-          <div class="paciente-data">${formatarData(p.dataSalvo)}</div>
+          <div class="paciente-data">${p.dataAtualizacao ? '✏️ ' + formatarData(p.dataAtualizacao) : formatarData(p.dataSalvo)}</div>
         </div>
         <div class="paciente-info">
           ${p.idade ? `${p.idade} anos` : ''} ${p.idade && p.sexo ? '•' : ''} ${p.sexo === 'M' ? 'Masculino' : 'Feminino'}
@@ -2729,13 +4129,16 @@ ${linhas.map(renderLinha).join("")}
       });
     }
 
+    // Interceptar geração de relatório para perguntar sobre salvamento
     const originalGerarRelatorio = window.gerarRelatorio;
     if (typeof originalGerarRelatorio === 'function') {
       window.gerarRelatorio = function () {
         originalGerarRelatorio();
         
+        // Perguntar para salvar após mostrar o relatório
         setTimeout(() => {
-          if (confirm('💾 Deseja salvar este paciente no histórico?')) {
+          const nome = document.getElementById('nome')?.value?.trim();
+          if (nome && confirm('💾 Deseja salvar esta anamnese no histórico?')) {
             window.salvarPacienteAtual();
           }
         }, 500);
@@ -2788,8 +4191,11 @@ ${linhas.map(renderLinha).join("")}
     };
 
     const { score, risco } = calcCURB65(dados);
-    document.getElementById("curb-resultado").textContent =
-      `CURB-65: ${score} ponto(s) – ${risco}`;
+    const texto = `CURB-65: ${score} ponto(s) – ${risco}`;
+    document.getElementById("curb-resultado").textContent = texto;
+    
+    // Salvar score calculado
+    salvarScore("CURB-65", `${score}/5`, risco);
   }
 
   // ---------- Glasgow ----------
@@ -2817,8 +4223,11 @@ ${linhas.map(renderLinha).join("")}
     const motora = document.getElementById("gcs-motora").value;
 
     const { total, e, v, m, classificacao } = calcGCS({ocular, verbal, motora});
-    document.getElementById("gcs-resultado").textContent =
-      `Glasgow: ${total} (E${e} V${v} M${m}) – ${classificacao}`;
+    const texto = `Glasgow: ${total} (E${e} V${v} M${m}) – ${classificacao}`;
+    document.getElementById("gcs-resultado").textContent = texto;
+    
+    // Salvar score calculado
+    salvarScore("Glasgow", `${total}/15 (E${e} V${v} M${m})`, classificacao);
   }
 
   // ---------- TIMI Score ----------
@@ -2856,8 +4265,11 @@ ${linhas.map(renderLinha).join("")}
     };
 
     const { score, risco } = calcTIMI(dados);
-    document.getElementById("timi-resultado").textContent =
-      `TIMI Score: ${score}/7 – ${risco}`;
+    const texto = `TIMI Score: ${score}/7 – ${risco}`;
+    document.getElementById("timi-resultado").textContent = texto;
+    
+    // Salvar score calculado
+    salvarScore("TIMI", `${score}/7`, risco);
   }
 
   // ---------- SOFA Score ----------
@@ -2896,8 +4308,11 @@ ${linhas.map(renderLinha).join("")}
     };
 
     const { total, interpretacao } = calcSOFA(dados);
-    document.getElementById("sofa-resultado").textContent =
-      `SOFA Score: ${total}/24 – ${interpretacao}`;
+    const texto = `SOFA Score: ${total}/24 – ${interpretacao}`;
+    document.getElementById("sofa-resultado").textContent = texto;
+    
+    // Salvar score calculado
+    salvarScore("SOFA", `${total}/24`, interpretacao);
   }
 
   // ---------- Wells Score (TVP) ----------
@@ -2941,8 +4356,99 @@ ${linhas.map(renderLinha).join("")}
     };
 
     const { score, probabilidade } = calcWells(dados);
-    document.getElementById("wells-resultado").textContent =
-      `Wells Score: ${score} pontos – ${probabilidade}`;
+    const texto = `Wells Score: ${score} pontos – ${probabilidade}`;
+    document.getElementById("wells-resultado").textContent = texto;
+    
+    // Salvar score calculado
+    salvarScore("Wells (TVP)", `${score} pontos`, probabilidade);
+  }
+
+  // ---------- CHA2DS2-VASc Score ----------
+  function calcCHA2DS2VASc(dados) {
+    let score = 0;
+    if (dados.chf) score += 1;
+    if (dados.has) score += 1;
+    if (dados.idade75) score += 2;
+    if (dados.dm) score += 1;
+    if (dados.avc) score += 2;
+    if (dados.vasc) score += 1;
+    if (dados.idade65) score += 1;
+    if (dados.sexo) score += 1;
+
+    let recomendacao;
+    if (score === 0) {
+      recomendacao = "Baixo risco - Sem anticoagulação (ou considerar)";
+    } else if (score === 1) {
+      recomendacao = "Baixo-intermediário - Considerar anticoagulação (preferível se homem)";
+    } else {
+      recomendacao = "Alto risco - Anticoagulação recomendada";
+    }
+
+    return { score, recomendacao };
+  }
+
+  function atualizaCHA2DS2VASc() {
+    const dados = {
+      chf: document.getElementById("cha2-chf").checked,
+      has: document.getElementById("cha2-has").checked,
+      idade75: document.getElementById("cha2-idade75").checked,
+      dm: document.getElementById("cha2-dm").checked,
+      avc: document.getElementById("cha2-avc").checked,
+      vasc: document.getElementById("cha2-vasc").checked,
+      idade65: document.getElementById("cha2-idade65").checked,
+      sexo: document.getElementById("cha2-sexo").checked
+    };
+
+    const { score, recomendacao } = calcCHA2DS2VASc(dados);
+    const texto = `CHA2DS2-VASc: ${score} pontos – ${recomendacao}`;
+    document.getElementById("cha2-resultado").textContent = texto;
+    
+    // Salvar score calculado
+    salvarScore("CHA2DS2-VASc", `${score}/9`, recomendacao);
+  }
+
+  // ---------- HAS-BLED Score ----------
+  function calcHASBLED(dados) {
+    let score = 0;
+    if (dados.has) score += 1;
+    if (dados.renal) score += 1;
+    if (dados.hepat) score += 1;
+    if (dados.avc) score += 1;
+    if (dados.sangra) score += 1;
+    if (dados.inr) score += 1;
+    if (dados.idade) score += 1;
+    if (dados.drogas) score += 1;
+
+    let risco;
+    if (score <= 2) {
+      risco = "Baixo risco de sangramento (1.13% ao ano)";
+    } else if (score === 3) {
+      risco = "Risco intermediário (3.74% ao ano) - Cautela";
+    } else {
+      risco = "Alto risco (8.7% ao ano) - Considerar benefício/risco";
+    }
+
+    return { score, risco };
+  }
+
+  function atualizaHASBLED() {
+    const dados = {
+      has: document.getElementById("hasbled-has").checked,
+      renal: document.getElementById("hasbled-renal").checked,
+      hepat: document.getElementById("hasbled-hepat").checked,
+      avc: document.getElementById("hasbled-avc").checked,
+      sangra: document.getElementById("hasbled-sangra").checked,
+      inr: document.getElementById("hasbled-inr").checked,
+      idade: document.getElementById("hasbled-idade").checked,
+      drogas: document.getElementById("hasbled-drogas").checked
+    };
+
+    const { score, risco } = calcHASBLED(dados);
+    const texto = `HAS-BLED: ${score} pontos – ${risco}`;
+    document.getElementById("hasbled-resultado").textContent = texto;
+    
+    // Salvar score calculado
+    salvarScore("HAS-BLED", `${score}/9`, risco);
   }
 
   </script>
@@ -2952,6 +4458,9 @@ ${linhas.map(renderLinha).join("")}
       <h2>🏥 Selecione a Especialidade</h2>
       <div class="especialidade-item" onclick="selecionarEspecialidade('gastro')">
         🔥 Gastroenterologia
+      </div>
+      <div class="especialidade-item" onclick="selecionarEspecialidade('psiq')">
+        🧠 Psiquiatria
       </div>
       <div class="especialidade-item" onclick="alert('Em breve!')">
         ❤️ Cardiologia (Em breve)
